@@ -1,0 +1,11 @@
+import { mkdir, copyFile, cp, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const dist = path.join(root, 'dist');
+await mkdir(dist, { recursive: true });
+const files = ['index.html', 'styles.css', 'app.js', 'core.js', 'i18n.js', 'sw.js', 'manifest.webmanifest'];
+for (const file of files) await copyFile(path.join(root, file), path.join(dist, file));
+await cp(path.join(root, 'assets'), path.join(dist, 'assets'), { recursive: true });
+await writeFile(path.join(dist, '.nojekyll'), '');
+console.log('Built dist/ — static files only. No business data, secrets or dependencies.');
